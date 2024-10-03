@@ -21,7 +21,7 @@ services:
        hibernate__hbm2ddl__auto: create
        javax__persistence__jdbc__driver: org.postgresql.Driver
        javax__persistence__jdbc__password: g02OqC4A1sRnd2TpF6ONLRT3Qg63EHrd
-       DATABASE_URL: postgresql://postgresql:g02OqC4A1sRnd2TpF6ONLRT3Qg63EHrd@dpg-crvat2hu0jms73ao34r0-a:5432/dbservice
+       DATABASE_URL: jdbc:postgresql://dpg-crvat2hu0jms73ao34r0-a.oregon-postgres.render.com:5432/dbservice
        javax__persistence__jdbc__user: postgresql
     depends_on:
      - dbservice
