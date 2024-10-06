@@ -6,10 +6,15 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: g02OqC4A1sRnd2TpF6ONLRT3Qg63EHrd
-      POSTGRES_DB: dbservice  
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}  
     volumes:
       - ./postgresdb:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   app:
     image: ddsdeploy
@@ -17,11 +22,12 @@ services:
     ports:
       - 8080:8080
     environment:
-      hibernate__hbm2ddl__auto: create
+      hibernate__hbm2ddl__auto: update
       javax__persistence__jdbc__driver: org.postgresql.Driver
-      javax__persistence__jdbc__url: jdbc:postgresql://dpg-crvat2hu0jms73ao34r0-a.oregon-postgres.render.com:5432/dbservice
-      javax__persistence__jdbc__user: postgresql
-      javax__persistence__jdbc__password: g02OqC4A1sRnd2TpF6ONLRT3Qg63EHrd
-      DATABASE_URL: postgresql://postgresql:g02OqC4A1sRnd2TpF6ONLRT3Qg63EHrd@dpg-crvat2hu0jms73ao34r0-a.oregon-postgres.render.com:5432/dbservice
+      javax__persistence__jdbc__url: jdbc:postgresql://dbservice:5432/${POSTGRES_DB}
+      javax__persistence__jdbc__user: postgres
+      javax__persistence__jdbc__password: ${POSTGRES_PASSWORD}
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@dbservice:5432/${POSTGRES_DB}
     depends_on:
-      - dbservice
+      dbservice:
+        condition: service_healthy
